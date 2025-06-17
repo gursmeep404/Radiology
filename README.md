@@ -4,7 +4,6 @@ The aim is to automate the extraction of key information from radiologists’ re
 We start from an Excel file with bleed reports, where each row corresponds to a patient’s radiology report.
 From these reports, we need to extract:
 
----
 
 - Normal/Abnormal
 - Pathologies extracted- comma separated( Ex- sdh, haemorrhag, sah, Uncal Herniation)
