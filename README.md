@@ -49,20 +49,7 @@ Fine-tuned `t5-small` on the labeled dataset using **5-fold cross validation**, 
 *This was the first successful, scalable solution with measurable performance.*
 
 
-### 5. **Retrieval-Augmented Generation (RAG) with TF-IDF + FAISS**
-Converted all rows of the labeled dataset into **retrievable documents**. Implemented RAG-style pipeline where the model retrieves similar diagnosis text based on TF-IDF similarity and generates labels from that.
-
-This approach was limited — the retrieved text often **overrides the actual input**, reducing generalization on unseen reports.
-
-
-### 6. **Fine-tuning with RAG Pipeline**
-Combined both concepts: Used retrieved context during fine-tuning, so the model **learns to generalize** over both original input and similar examples.
-
-Surprisingly, this approach yielded **very low test loss (~0.07)** and strong generalization — even on unseen data.
-
-## Experimental Results & Analysis
-
-### 5-Fold Cross Validation (T5 Fine-tuning)
+#### 5-Fold Cross Validation (T5 Fine-tuning)
 
 | Fold | Eval Loss |
 |------|-----------|
@@ -86,7 +73,7 @@ The validation loss across all 5 folds is consistently low, with a slight variat
 These results gave confidence to proceed with full-dataset fine-tuning and RAG-style experimentation.
 
 
-### Fine-tuning on Full Data 
+#### Fine-tuning on Full Data 
 
 - **Final Test Loss**: `0.173415`
 
@@ -99,22 +86,21 @@ These results gave confidence to proceed with full-dataset fine-tuning and RAG-s
 
 Still, the loss remains quite reasonable showing that the model has generalized decently to new radiologist reports after full training.
 
+### 5. **Retrieval-Augmented Generation (RAG) with TF-IDF + FAISS**
+Implemented a Retrieval-Augmented Generation setup using TF-IDF + FAISS, where each diagnosis text in the labeled dataset was treated as a retrievable document. At inference time, the system retrieved the most similar document for a given input and attempted to generate labels from that context.
 
-### RAG Pipeline (Retrieval without Fine-tuning)
+Test Loss: `11.75273`
 
-- **Test Loss**: `11.75273`
+Inference:
+This approach performed poorly — the extremely high loss reveals a critical flaw: the model relied entirely on the retrieved context without truly understanding or adapting to the current input. Since FAISS retrieves text based solely on vector similarity, the returned context was often not relevant enough for accurate prediction, especially for unseen or nuanced inputs.
 
-**Inference**:
-- Such a high loss indicates that RAG approach is not good in this problem statement since the FAISS compares vectors and finds the most similar one in the corpus. The results are then based on this retrived document only. 
 
----
+### 6. **Fine-tuning with RAG Pipeline**
+Here, the model was fine-tuned using retrieved documents as context. This way, the model learned during training how to interpret similar prior cases while grounding its predictions in the specific input at hand.
 
-### RAG Fine-tuning
+Test Loss: `0.1902`
 
-- **Test Loss**: `~0.07`
-
-**Inference**:
-- Fine-tuning the model with retrieved context helped it learn **how to leverage similar prior cases** while still focusing on the current input.
-- Achieved the **best trade-off between context-awareness and generalization**.
-- Demonstrates that **RAG + supervision** outperforms plain RAG, and nearly matches pure fine-tuning — but with better handling of slightly unseen or noisy inputs.
+Inference:
+A significant improvement — nearly two orders of magnitude lower loss than the non-fine-tuned version. This shows that when retrieval is paired with supervised fine-tuning, the model learns to use similar examples as helpful context rather than as direct replacements.
+This hybrid setup blends the generalization power of fine-tuning with the contextual awareness of RAG, resulting in more accurate, robust outputs even on unseen diagnoses.
 
