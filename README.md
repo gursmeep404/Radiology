@@ -1,4 +1,4 @@
-[Start gif](./images/start.gif "brain_scan")
+![Start gif](./images/start.gif "brain_scan")
 
 # Automated Extraction of Structured Labels from Radiologist Diagnoses
 
