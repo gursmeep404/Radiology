@@ -104,3 +104,24 @@ Inference:
 A significant improvement — nearly two orders of magnitude lower loss than the non-fine-tuned version. This shows that when retrieval is paired with supervised fine-tuning, the model learns to use similar examples as helpful context rather than as direct replacements.
 This hybrid setup blends the generalization power of fine-tuning with the contextual awareness of RAG, resulting in more accurate, robust outputs even on unseen diagnoses.
 
+
+## Models Access
+
+All fine-tuned models from this project are available on Hugging Face:
+
+- 🔗 [t5-radiology-finetuned](https://huggingface.co/whtgursmeepdoes/t5-radiology-model)
+- 🔗 [t5-rag-finetuned](https://huggingface.co/whtgursmeepdoes/t5-RAG-radiology-model)
+
+You can load and use them directly with `transformers`:
+
+```python
+from transformers import T5Tokenizer, T5ForConditionalGeneration
+
+tokenizer = T5Tokenizer.from_pretrained("whtgursmeepdoes/t5-radiology-model")
+model = T5ForConditionalGeneration.from_pretrained("whtgursmeepdoes/t5-RAG-radiology-model")
+
+input_text = "Extract info: [your diagnosis text here]"
+inputs = tokenizer(input_text, return_tensors="pt")
+outputs = model.generate(**inputs)
+
+print(tokenizer.decode(outputs[0], skip_special_tokens=True))
