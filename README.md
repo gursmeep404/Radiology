@@ -19,14 +19,14 @@ From these reports, we need to extract:
 - Started with simple keyword matching
 - Looked for keywords in the radiologists’ reports to extract abnormalities
 
-- `Issue`: It wasn't robust or accurate enough. It missed context and subtle abnormalities 
+- `Issue`: It wasn't robust or accurate enough. It missed context and subtle abnormalities
 
 **DistilGPT-2, FLAN-T5, BioGPT** :
 - Experimented with open-source large language models (100M parameters)
 
 - `Issue`: These models were not proficient at understanding specialized radiology reports
 
-**DeepSeek-R1 (1.3B parameters)**
+**DeepSeek-R1-Distill-Qwen-32B**
 - It performed considerably better at understanding context and retrieving information
 
 - `Issue`: The main bottleneck was processing time, because we queried it row by row. The approach wasn't scalable for large datasets and resulted in slow processing speeds
