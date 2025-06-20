@@ -118,10 +118,4 @@ You can load and use them directly with `transformers`:
 from transformers import T5Tokenizer, T5ForConditionalGeneration
 
 tokenizer = T5Tokenizer.from_pretrained("whtgursmeepdoes/t5-radiology-model")
-model = T5ForConditionalGeneration.from_pretrained("whtgursmeepdoes/t5-RAG-radiology-model")
-
-input_text = "Extract info: [your diagnosis text here]"
-inputs = tokenizer(input_text, return_tensors="pt")
-outputs = model.generate(**inputs)
-
-print(tokenizer.decode(outputs[0], skip_special_tokens=True))
+model = T5ForConditionalGeneration.from_pretrained("whtgursmeepdoes/t5-radiology-model")
