@@ -59,3 +59,62 @@ This approach was limited — the retrieved text often **overrides the actual in
 Combined both concepts: Used retrieved context during fine-tuning, so the model **learns to generalize** over both original input and similar examples.
 
 Surprisingly, this approach yielded **very low test loss (~0.07)** and strong generalization — even on unseen data.
+
+## Experimental Results & Analysis
+
+### 5-Fold Cross Validation (T5 Fine-tuning)
+
+| Fold | Eval Loss |
+|------|-----------|
+| 1    |0.031592|
+| 2    |0.032712|
+| 3    |0.033307|
+| 4    |0.025809|
+| 5    |0.026952|
+
+**Average Loss**: `0.0300744`
+
+**Inference**:
+The validation loss across all 5 folds is consistently low, with a slight variation between folds. This suggests that the model is:
+
+- Stable across different data splits
+
+- Not overfitting to a specific subset
+
+- Learning meaningful patterns from the radiology diagnoses
+
+These results gave confidence to proceed with full-dataset fine-tuning and RAG-style experimentation.
+
+
+### Fine-tuning on Full Data 
+
+- **Final Test Loss**: `0.173415`
+
+**Inference**:
+- The jump from the low K-Fold losses (~0.03) to a slightly higher final test loss (~0.17) is expected since:
+
+- The model is now exposed to completely unseen diagnosis styles.
+
+- Real-world generalization is tougher without exact matches in training.
+
+Still, the loss remains quite reasonable showing that the model has generalized decently to new radiologist reports after full training.
+
+
+### RAG Pipeline (Retrieval without Fine-tuning)
+
+- **Test Loss**: `11.75273`
+
+**Inference**:
+- Such a high loss indicates that RAG approach is not good in this problem statement since the FAISS compares vectors and finds the most similar one in the corpus. The results are then based on this retrived document only. 
+
+---
+
+### RAG Fine-tuning
+
+- **Test Loss**: `~0.07`
+
+**Inference**:
+- Fine-tuning the model with retrieved context helped it learn **how to leverage similar prior cases** while still focusing on the current input.
+- Achieved the **best trade-off between context-awareness and generalization**.
+- Demonstrates that **RAG + supervision** outperforms plain RAG, and nearly matches pure fine-tuning — but with better handling of slightly unseen or noisy inputs.
+
