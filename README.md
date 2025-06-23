@@ -10,7 +10,7 @@ This project began with a raw Excel file — containing diagnosis text for multi
 
 # Dataset 
 
-AIIMS dataset of diagnosis reports of brain MRI scans
+AIIMS dataset of diagnosis reports of brain MRI scans shared by company during internship
 
 
 ## Objective
